@@ -1,0 +1,18 @@
+/** function for return Success Response */
+ const successResponse = (msg, title, data, code) => ({
+    status: 1,
+    title: title,
+    message: msg,
+    code,
+    data: data || null,
+  });
+  /** function for return Error Response */
+   const errorResponse = (msg, title, data, code) => ({
+    status: 0,
+    title: title,
+    message: msg,
+    code,
+    data: data || null,
+  });
+  
+  module.exports = { successResponse, errorResponse }
