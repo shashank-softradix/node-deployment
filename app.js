@@ -1,10 +1,10 @@
 const http = require('http')
 const Server = require('./bin/server')
-//const Logger = require('./src/helpers/logger')
+const Logger = require('./src/helpers/logger')
 const dotenv = require('dotenv');
 const env = dotenv.config();
 
-import Logger  from './src/helpers/logger';
+// import Logger  from './src/helpers/logger';
 
 class Application {
     constructor(){
