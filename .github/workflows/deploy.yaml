@@ -4,12 +4,10 @@ on:
   push:
     branches:
       - main   # Specify the branch to trigger the workflow
-    paths:
-      - '.github/workflows/deploy.yaml'
 
 jobs:
-  Build:
-    runs-on: self-hosted
+  deploy:
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
