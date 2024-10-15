@@ -27,11 +27,11 @@ class Server {
                     extended:true
                 }),
             );
-            // this.db = new DB();
-            // await this.db.init();
+            this.db = new DB();
+            await this.db.init();
             await this.healthCheckRoute();
-            // await this.healthyDB();
-            // await this.configureRoutes(this.db);
+            await this.healthyDB();
+            await this.configureRoutes(this.db);
 
             // this.app.use('/api-docs', swaggerUi.serve);
             // this.app.get('/api-docs', swaggerUi.setup(swaggerDocument));
