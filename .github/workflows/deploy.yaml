@@ -19,10 +19,14 @@ jobs:
         node-version: 20
 
     - name: Set up SSH
+      env:
+        HOSTNAME: ${{ secrets.EC2_HOST }}
+        USER_NAME: ${{ secrets.EC2_USER }}
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
         chmod 600 my-ssh-key.pem
-        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+        ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${secrets.HOSTNAME} '
+        set -e
 
     - name: Deploy to EC2
       run: |
