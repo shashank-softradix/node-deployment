@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main   # Specify the branch to trigger the workflow
+      - main
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3  # Using the latest version to avoid deprecation warning
+      uses: actions/checkout@v2
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -19,27 +19,35 @@ jobs:
         node-version: 20
 
     - name: Set up SSH
-      env:
-        HOSTNAME: ${{ secrets.EC2_HOST }}
-        USER_NAME: ${{ secrets.EC2_USER }}
       run: |
+        # Check if secrets are being passed correctly
+        echo "Setting up SSH with the provided secrets."
+
+        # Create the .ssh directory
+        mkdir -p ~/.ssh
+
+        # Save the SSH key and set correct permissions
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
         chmod 600 my-ssh-key.pem
 
-        # Create the .ssh directory if it doesn't exist
-        mkdir -p ~/.ssh
+        # Add EC2 host to known_hosts to avoid the fingerprint prompt
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-        # Add the EC2 host to known_hosts
-        ssh-keyscan -H ${{ env.HOSTNAME }} >> ~/.ssh/known_hosts
+        # Check if SSH key and known_hosts have been set up properly
+        ls -la ~/.ssh
+        cat ~/.ssh/known_hosts
 
     - name: Deploy to EC2
       run: |
-        ssh -i my-ssh-key.pem ${{ env.USER_NAME }}@${{ env.HOSTNAME }} << 'EOF'
-          # Navigate to your project directory
-          cd /node-deployment
+        # Debug to see if SSH connection works
+        ssh -i my-ssh-key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH connection successful'"
 
-          # Optional: Stop existing services (if any)
-          pm2 stop all  # or any other process manager you're using
+        # If the SSH connection works, proceed with deployment
+        ssh -i my-ssh-key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          cd /node-deployment
+          
+          # Stop existing services (if any)
+          pm2 stop all || true
 
           # Pull the latest changes
           git pull origin main
@@ -48,5 +56,5 @@ jobs:
           npm install
 
           # Restart the services
-          pm2 start all  # or any other command to start the service
+          pm2 start all || true
         EOF
