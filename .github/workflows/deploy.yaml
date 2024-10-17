@@ -18,16 +18,43 @@ jobs:
       with:
         node-version: 20
 
-    - name: SSH into EC2 and deploy application
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
+    - name: Set up SSH
+      run: |
+        # Check if secrets are being passed correctly
+        echo "Setting up SSH with the provided secrets."
+
+        # Create the .ssh directory
+        mkdir -p ~/.ssh
+
+        # Save the SSH key and set correct permissions
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
+        chmod 600 my-ssh-key.pem
+
+        # Add EC2 host to known_hosts to avoid the fingerprint prompt
+        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+        # Check if SSH key and known_hosts have been set up properly
+        ls -la ~/.ssh
+        cat ~/.ssh/known_hosts
+
+    - name: Deploy to EC2
+      run: |
+        # Debug to see if SSH connection works
+        ssh -i my-ssh-key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH connection successful'"
+
+        # If the SSH connection works, proceed with deployment
+        ssh -i my-ssh-key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           cd /node-deployment
+          
+          # Stop existing services (if any)
+          pm2 stop all || true
+
+          # Pull the latest changes
           git pull origin main
-          # Install dependencies, run build, restart services
+
+          # Install dependencies (if needed)
           npm install
-          npm run build
-          pm2 restart all
+
+          # Restart the services
+          pm2 start all || true
+        EOF
