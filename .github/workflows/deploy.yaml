@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main
+      - develop
 
 jobs:
   deploy:
@@ -27,5 +27,5 @@ jobs:
            chmod 400 my-ssh-key.pem
            ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${HOSTNAME} '
            ls -a
-           cd node-deployment && git pull origin main --no-ff && npm install && pm2 start npm -- start
+           cd node-deployment && git pull origin develop --no-ff && npm install && pm2 start npm -- start
            '
