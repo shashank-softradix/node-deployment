@@ -24,14 +24,9 @@ jobs:
         mkdir -p ~/.ssh 
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
         chmod 600 my-ssh-key.pem
-        ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-        echo "SSH key and known_hosts set up."
+        # ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+        # echo "SSH key and known_hosts set up."
 
-    - name: Verify SSH setup
-      run: |
-        ls -la ~/.ssh
-        echo "SSH setup completed without exposing secrets."
-    
     - name: Deploy to EC2
       run: |
         ssh -i my-ssh-key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH connection successful'"
