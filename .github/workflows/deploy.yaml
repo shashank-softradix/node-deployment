@@ -27,5 +27,5 @@ jobs:
            chmod 400 my-ssh-key.pem
            ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${HOSTNAME} '
            ls -a
-           cd node-deployment && git add . && git commit -m "latest pull" && git pull origin main && npm install && pm2 start npm -- start
+           cd node-deployment && npm install && pm2 start npm -- start
            '
