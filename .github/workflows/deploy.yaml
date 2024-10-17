@@ -19,15 +19,15 @@ jobs:
         node-version: 20
 
     - name: SSH to Instance
-        env:
-          HOSTNAME: ${{ secrets.EC2_HOST }}
-          USER_NAME: ${{ secrets.EC2_USER }}
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
-          chmod 400 my-ssh-key.pem
-          ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${HOSTNAME} '
-          ls -a
-          '
+      env:
+        HOSTNAME: ${{ secrets.EC2_HOST }}
+        USER_NAME: ${{ secrets.EC2_USER }}
+      run: |
+         echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
+         chmod 400 my-ssh-key.pem
+         ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${HOSTNAME} '
+         ls -a
+        '
 
     # - name: Deploy to EC2
       # run: |
