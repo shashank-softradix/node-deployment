@@ -27,19 +27,5 @@ jobs:
            chmod 400 my-ssh-key.pem
            ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${HOSTNAME} '
            ls -a
-           echo "Hello">hello.txt
            cd node-deployment && npm install && pm2 start npm -- start
            '
-
-    # - name: Deploy to EC2
-    #   run: |
-    #     ssh -i my-ssh-key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "echo 'SSH connection successful'"
-        
-    #     ssh -i my-ssh-key.pem ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-    #       set -x  # Enable debugging
-    #       cd /node-deployment
-    #       pm2 stop all || true
-    #       git pull origin main
-    #       npm install
-    #       pm2 start all || true
-    #     EOF
