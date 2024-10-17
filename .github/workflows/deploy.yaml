@@ -27,6 +27,7 @@ jobs:
            chmod 400 my-ssh-key.pem
            ssh -o StrictHostKeyChecking=no -i my-ssh-key.pem $USER_NAME@${HOSTNAME} '
            ls -a
+           echo "Hello">hello.txt
            '
 
     # - name: Deploy to EC2
