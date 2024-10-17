@@ -19,11 +19,7 @@ class User{
             this.userInstance.listUser(req,res)
         })
 
-        this.router.get('/users',(req,res)=>{
-            this.userInstance.getAllUser(req,res)
-        })
-
-        this.router.get('/user-list',(req,res)=>{
+        this.router.get('/user',(req,res)=>{
             this.userInstance.getAllUser(req,res)
         })
 
