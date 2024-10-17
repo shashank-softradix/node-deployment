@@ -23,7 +23,7 @@ jobs:
         echo "Setting up SSH with the provided secrets."
         mkdir -p ~/.ssh 
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > my-ssh-key.pem
-        chmod 600 my-ssh-key.pem
+        chmod 400 my-ssh-key.pem
         # ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
         # echo "SSH key and known_hosts set up."
 
